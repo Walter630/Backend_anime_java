@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo_db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: siteanime
+      KEYFILE_BASE64: ${KEYFILE_BASE64-}  # opcional, pode gerar com openssl
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/config
+    entrypoint:
+      [
+        "bash","-lc",
+        "set -e; mkdir -p /data/config; \
+        if [ ! -f /data/config/mongo-keyfile ]; then \
+          if [ -n \"$KEYFILE_BASE64\" ]; then \
+            printf '%s' \"$KEYFILE_BASE64\" | base64 -d > /data/config/mongo-keyfile; \
+          else \
+            head -c 756 /dev/urandom | base64 > /data/config/mongo-keyfile; \
+          fi; \
+          chown mongodb:mongodb /data/config/mongo-keyfile; chmod 600 /data/config/mongo-keyfile; \
+        fi; \
+        exec docker-entrypoint.sh mongod --replSet rs0 --bind_ip_all --keyFile /data/config/mongo-keyfile --auth"
+      ]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mongosh -u root -p root --authenticationDatabase admin --quiet --eval \"db.runCommand({ ping: 1 })\" >/dev/null 2>&1"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 40s
+
+  mongo-init-replica:
+    image: mongo:7
+    restart: "no"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    entrypoint: ["bash", "-lc"]
+    command: >
+      mongosh --host mongo:27017 -u root -p root --authenticationDatabase admin --quiet --eval
+      "try { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}) } catch(e) { if(!/already initialized/i.test(e)) throw e }"
+
+volumes:
+  mongo_data:
+  mongo_config:
