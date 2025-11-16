@@ -1,4 +1,4 @@
-package com.anime.Site.application.services;
+package com.anime.Site.adapters.services;
 
 import com.anime.Site.adapters.repository.MangasRepository;
 import com.anime.Site.domain.entities.MangasEntities;

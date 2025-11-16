@@ -1,13 +1,8 @@
-package com.anime.Site.application.services;
+package com.anime.Site.adapters.services;
 
-import com.anime.Site.adapters.repository.AdminRepository;
 import com.anime.Site.adapters.repository.AnimesRepository;
-import com.anime.Site.application.dto.AdminDTO;
-import com.anime.Site.application.dto.AnimeDto;
-import com.anime.Site.domain.entities.AdministradorEntitie;
-import com.anime.Site.domain.entities.AnimesEntitie;
+import com.anime.Site.domain.dto.AnimeDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.anime.Site.adapters.controller;
 
-import com.anime.Site.application.services.AdminService;
+import com.anime.Site.adapters.services.AdminService;
 import com.anime.Site.domain.entities.AdministradorEntitie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

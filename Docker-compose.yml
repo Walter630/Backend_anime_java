@@ -11,7 +11,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
       MONGO_INITDB_DATABASE: siteanime
-      KEYFILE_BASE64: ${KEYFILE_BASE64-}  # opcional, pode gerar com openssl
+      KEYFILE_BASE64: ${KEYFILE_BASE64-}
     volumes:
       - mongo_data:/data/db
       - mongo_config:/data/config
@@ -50,6 +50,17 @@ services:
     command: >
       mongosh --host mongo:27017 -u root -p root --authenticationDatabase admin --quiet --eval
       "try { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}) } catch(e) { if(!/already initialized/i.test(e)) throw e }"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 
 volumes:
   mongo_data:

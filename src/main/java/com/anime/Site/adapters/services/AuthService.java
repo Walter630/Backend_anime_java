@@ -1,10 +1,9 @@
-package com.anime.Site.application.services;
+package com.anime.Site.adapters.services;
 
 import com.anime.Site.adapters.repository.AdminRepository;
-import com.anime.Site.application.dto.AdminDTO;
-import com.anime.Site.application.dto.RegisterDTO;
-import com.anime.Site.application.dto.AdminRegistrarDTO;
-import com.anime.Site.application.dto.RoleDTO;
+import com.anime.Site.domain.dto.AdminDTO;
+import com.anime.Site.domain.dto.RegisterDTO;
+import com.anime.Site.domain.dto.AdminRegistrarDTO;
 import com.anime.Site.domain.entities.AdministradorEntitie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.anime.Site.application.dto;
+package com.anime.Site.domain.dto;
 
 public enum RoleDTO {
     ADMIN("ADMIN"),

@@ -1,7 +1,6 @@
 package com.anime.Site.adapters.repository;
 
-import com.anime.Site.application.dto.AnimeDto;
-import com.anime.Site.domain.entities.AnimesEntitie;
+import com.anime.Site.domain.dto.AnimeDto;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

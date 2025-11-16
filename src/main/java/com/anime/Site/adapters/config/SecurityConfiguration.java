@@ -1,6 +1,6 @@
 package com.anime.Site.adapters.config;
 
-import com.anime.Site.application.services.TokenService;
+import com.anime.Site.adapters.services.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

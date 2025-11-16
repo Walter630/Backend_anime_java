@@ -1,4 +1,4 @@
-package com.anime.Site.application.dto;
+package com.anime.Site.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

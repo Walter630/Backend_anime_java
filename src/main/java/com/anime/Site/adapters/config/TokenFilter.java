@@ -1,7 +1,6 @@
 package com.anime.Site.adapters.config;
 
-import com.anime.Site.application.services.TokenService;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.anime.Site.adapters.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

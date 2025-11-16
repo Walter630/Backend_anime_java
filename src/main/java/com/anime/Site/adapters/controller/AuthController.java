@@ -1,10 +1,10 @@
 package com.anime.Site.adapters.controller;
 
-import com.anime.Site.application.dto.AdminDTO;
-import com.anime.Site.application.dto.AdminRegistrarDTO;
-import com.anime.Site.application.dto.RegisterDTO;
-import com.anime.Site.application.services.AuthService;
-import com.anime.Site.application.services.TokenService;
+import com.anime.Site.domain.dto.AdminDTO;
+import com.anime.Site.domain.dto.AdminRegistrarDTO;
+import com.anime.Site.domain.dto.RegisterDTO;
+import com.anime.Site.adapters.services.AuthService;
+import com.anime.Site.adapters.services.TokenService;
 import com.anime.Site.domain.entities.AdministradorEntitie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

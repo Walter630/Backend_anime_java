@@ -1,4 +1,4 @@
-package com.anime.Site.application.dto;
+package com.anime.Site.domain.dto;
 
 import com.anime.Site.domain.entities.AdministradorEntitie;
 

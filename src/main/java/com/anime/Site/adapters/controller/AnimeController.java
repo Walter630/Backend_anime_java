@@ -1,14 +1,9 @@
 package com.anime.Site.adapters.controller;
 
-import com.anime.Site.application.dto.AdminDTO;
-import com.anime.Site.application.dto.AnimeDto;
-import com.anime.Site.application.services.AnimesService;
-import com.anime.Site.domain.entities.AdministradorEntitie;
-import com.anime.Site.domain.entities.AnimesEntitie;
+import com.anime.Site.domain.dto.AnimeDto;
+import com.anime.Site.adapters.services.AnimesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
