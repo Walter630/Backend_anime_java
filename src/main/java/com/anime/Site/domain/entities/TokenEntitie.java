@@ -1,10 +1,12 @@
 package com.anime.Site.domain.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import lombok.AllArgsConstructor;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,7 +15,13 @@ import lombok.AllArgsConstructor;
 public class TokenEntitie {
     @Id
     private String id;
-    private String token;
+    private String accessToken;      // Token de acesso curto (5–15 min)
+    private String refreshToken;     // Token de refresh longo (dias)
+    private String email;            // Dono do token
+
+    private Date expiresAt;          // Expiração do accessToken
+    private Date expiresRefresh;     // Expiração do refreshToken
+
 
     public TokenEntitie() {
     }

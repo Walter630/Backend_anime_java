@@ -1,11 +1,12 @@
 package com.anime.Site.adapters.controller;
 
+import com.anime.Site.adapters.services.AuthService;
+import com.anime.Site.adapters.services.TokenService;
 import com.anime.Site.domain.dto.AdminDTO;
 import com.anime.Site.domain.dto.AdminRegistrarDTO;
 import com.anime.Site.domain.dto.RegisterDTO;
-import com.anime.Site.adapters.services.AuthService;
-import com.anime.Site.adapters.services.TokenService;
 import com.anime.Site.domain.entities.AdministradorEntitie;
+import com.anime.Site.domain.entities.TokenEntitie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +28,14 @@ public class AuthController {
         return ResponseEntity.ok(authService.listar());
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AdminDTO body) {
+    public ResponseEntity<TokenEntitie> login(@RequestBody AdminDTO body) {
         try{
             // Busca usuário no banco
             AdministradorEntitie admin = authService.login(body);
-            var retorno = tokenService.gerarToken(admin.getEmail(), admin.getRole());
+            var retorno = tokenService.gerarTokens(admin.getEmail(), admin.getRole());
             return ResponseEntity.ok(retorno);
         }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
     @PostMapping("/register")
@@ -43,6 +44,16 @@ public class AuthController {
             authService.registrar(body);
             return ResponseEntity.ok("Usuario registrado com sucesso!");
         }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@RequestBody String email) {
+        try {
+            String token = tokenService.refreshAccessToken(email);
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

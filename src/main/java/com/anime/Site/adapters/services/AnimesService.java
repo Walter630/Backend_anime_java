@@ -1,7 +1,7 @@
 package com.anime.Site.adapters.services;
 
 import com.anime.Site.adapters.repository.AnimesRepository;
-import com.anime.Site.domain.dto.AnimeDto;
+import com.anime.Site.domain.entities.AnimesEntitie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,15 +14,15 @@ public class AnimesService {
     @Autowired
     private AnimesRepository animesRepository;
 
-    public List<AnimeDto> findAll() {
+    public List<AnimesEntitie> findAll() throws Exception {
         return animesRepository.findAll();
     }
 
-    public Optional<AnimeDto> findByNome(String nome) {
+    public Optional<AnimesEntitie> findByNome(String nome) {
         return animesRepository.findByNome(nome);
     }
 
-    public void delete(AnimeDto animeDto) {
+    public void delete(AnimesEntitie animeDto) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getAuthorities().stream()
                 .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
@@ -31,7 +31,7 @@ public class AnimesService {
         animesRepository.delete(animeDto);
     }
 
-    public AnimeDto save(AnimeDto animeDto) {
+    public AnimesEntitie save(AnimesEntitie animeDto) {
 
         // Pega a role do usuário logado
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -41,7 +41,7 @@ public class AnimesService {
             throw new RuntimeException("Usuário sem permissão para cadastrar anime!");
         }
 
-        if (animesRepository.findByNome(animeDto.nome()).isPresent()) {
+        if (animesRepository.findByNome(animeDto.getNome()).isPresent()) {
             throw new RuntimeException("Anime já cadastrado!");
         }
 
@@ -51,5 +51,13 @@ public class AnimesService {
 
     public void findById(String id) {
         animesRepository.findById(id);
+    }
+
+    public void addVideo(String animeId, String videoUrl) {
+        var anime = animesRepository.findById(animeId)
+                .orElseThrow(() -> new RuntimeException("Anime não encontrado"));
+
+        anime.getVideos().add(videoUrl);
+        animesRepository.save(anime);
     }
 }

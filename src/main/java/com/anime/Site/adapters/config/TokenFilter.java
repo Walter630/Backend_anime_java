@@ -3,11 +3,10 @@ package com.anime.Site.adapters.config;
 import com.anime.Site.adapters.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -50,7 +49,7 @@ public class TokenFilter extends OncePerRequestFilter {
             String token = header.substring(7);
 
             try {
-                var decodedJWT = tokenService.verificarToken(token);
+                var decodedJWT = tokenService.verificarAccessToken(token);
 
                 String email = decodedJWT.getSubject();
                 String role = decodedJWT.getClaim("role").asString();
@@ -79,4 +78,9 @@ public class TokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    protected void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(message);
+    }
 }
