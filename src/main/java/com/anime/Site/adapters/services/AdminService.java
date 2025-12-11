@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminService {
@@ -13,5 +14,14 @@ public class AdminService {
     private AdminRepository adminRepository;
     public List<AdministradorEntitie> listar() {
       return adminRepository.findAll();
+    }
+    public Optional<AdministradorEntitie> buscarPorId(String id) {
+      return adminRepository.findById(id);
+    }
+    public Optional<AdministradorEntitie> buscarPorEmail(String email) {
+      return adminRepository.findByEmail(email);
+    }
+    public void salvar(AdministradorEntitie admin) {
+      adminRepository.save(admin);
     }
 }

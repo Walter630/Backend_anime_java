@@ -42,6 +42,6 @@ public class UserService {
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        return animesRepository.findByFavorito(user.getFavoritos());
+        return animesRepository.findByIds(user.getFavoritos());
     }
 }

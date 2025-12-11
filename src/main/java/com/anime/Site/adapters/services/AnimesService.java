@@ -22,13 +22,13 @@ public class AnimesService {
         return animesRepository.findByNome(nome);
     }
 
-    public void delete(AnimesEntitie animeDto) {
+    public void delete(String animesEntitie) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getAuthorities().stream()
                 .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             throw new RuntimeException("Usuário sem permissão para deletar anime!");
         }
-        animesRepository.delete(animeDto);
+        animesRepository.delete(animesEntitie);
     }
 
     public AnimesEntitie save(AnimesEntitie animeDto) {

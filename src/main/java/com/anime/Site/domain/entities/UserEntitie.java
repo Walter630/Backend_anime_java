@@ -4,23 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "User")
+
 @Setter
 @Getter
 @AllArgsConstructor
-
 public class UserEntitie {
     @Id
+
     private String id;
-    private String nome;
+    private String name;
     private String email;
-    private String senha;
+    private String password;
     private String role;
+
 
     private List<String> favoritos = new ArrayList<>();
     public UserEntitie() {
@@ -28,7 +28,7 @@ public class UserEntitie {
 
     @Override
     public String toString() {
-        return "UserEntitie [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", role=" + role
+        return "UserEntitie [id=" + id + ", nome=" + name + ", email=" + email + ", senha=" + password + ", role=" + role
                 + ", favoritos=" + favoritos + "]";
     }
 

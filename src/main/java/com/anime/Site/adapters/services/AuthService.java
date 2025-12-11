@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -26,9 +27,10 @@ public class AuthService {
         }
 
         AdministradorEntitie novoAdmin = new AdministradorEntitie();
-        novoAdmin.setNome(dto.getNome());
+        novoAdmin.setId(UUID.randomUUID().toString());
+        novoAdmin.setName(dto.getName());
         novoAdmin.setEmail(dto.getEmail());
-        novoAdmin.setSenha(passwordEncoder.encode(dto.getSenha()));
+        novoAdmin.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         novoAdmin.setRole("USER");
         administradorRepository.save(novoAdmin);
@@ -38,7 +40,7 @@ public class AuthService {
         AdministradorEntitie admin = administradorRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
 
-        if (!passwordEncoder.matches(dto.senha(), admin.getSenha())) {
+        if (!passwordEncoder.matches(dto.password(), admin.getPassword())) {
             throw new RuntimeException("Senha incorreta!");
         }
 
@@ -61,7 +63,7 @@ public class AuthService {
 
         AdministradorEntitie novoAdmin = new AdministradorEntitie();
         novoAdmin.setEmail(dto.email());
-        novoAdmin.setSenha(passwordEncoder.encode(dto.senha()));
+        novoAdmin.setPassword(passwordEncoder.encode(dto.senha()));
         novoAdmin.setRole("ADMIN"); // sempre ADMIN
 
         administradorRepository.save(novoAdmin);

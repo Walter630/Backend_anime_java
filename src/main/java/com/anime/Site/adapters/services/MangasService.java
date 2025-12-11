@@ -22,7 +22,7 @@ public class MangasService {
     public MangasEntities save(MangasEntities mangasEntities) {
         return mangasRepository.save(mangasEntities);
     }
-    public void delete(MangasEntities mangasEntities) {
+    public void delete(String mangasEntities) {
         mangasRepository.delete(mangasEntities);
     }
 }

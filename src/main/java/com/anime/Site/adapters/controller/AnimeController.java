@@ -37,7 +37,7 @@ public class AnimeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<AnimesEntitie> deleteAnime(AnimesEntitie animeId) {
+    public ResponseEntity<AnimesEntitie> deleteAnime(String animeId) {
         animesService.delete(animeId);
         return ResponseEntity.ok().build();
     }

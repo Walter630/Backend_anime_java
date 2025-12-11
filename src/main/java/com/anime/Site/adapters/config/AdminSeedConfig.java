@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.UUID;
+
 @Configuration
 public class AdminSeedConfig {
 
@@ -16,8 +18,10 @@ public class AdminSeedConfig {
             if (adminRepository.count() == 0) { // banco vazio
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 AdministradorEntitie admin = new AdministradorEntitie();
+                admin.setId(UUID.randomUUID().toString());
+                admin.setName("admin");
                 admin.setEmail("admin@site.com");          // Defina o email
-                admin.setSenha(encoder.encode("123456"));  // Defina a senha inicial
+                admin.setPassword(encoder.encode("123456"));  // Defina a senha inicial
                 admin.setRole("ADMIN");                    // Role ADMIN
                 adminRepository.save(admin);
                 System.out.println("Admin inicial criado: admin@site.com / 123456");

@@ -25,8 +25,8 @@ public class VideoService {
         return videosRepository.save(videoEntitie);
     }
 
-    public VideoEntitie delete(VideoEntitie videoEntitie) {
-        videosRepository.delete(videoEntitie);
-        return videoEntitie;
+    public Optional<VideoEntitie> delete(String videoEntitie) {
+        return videosRepository.delete(videoEntitie);
+
     }
 }
