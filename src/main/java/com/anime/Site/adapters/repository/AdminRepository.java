@@ -27,22 +27,25 @@ public class AdminRepository {
         );
         return list.stream().findFirst();
     }
-    public Optional<AdministradorEntitie> findByEmail(String email) {
+    public AdministradorEntitie findByEmail(String email) {
         List<AdministradorEntitie> list = jdbc.query(
                 "SELECT * FROM administradores WHERE email = ?",
                 adminMapper,
                 email
         );
-        return list.stream().findFirst();
+        return list.stream()
+                .findFirst()
+                .orElse(null);
     }
     public void save(AdministradorEntitie admin) {
         jdbc.update(
-                "INSERT INTO administradores (id, nome, email, senha, role) VALUES (?, ?, ?, ?, ?)",
+                "INSERT INTO administradores (id, name, email, password, role, active) VALUES (?, ?, ?, ?, ?, ?)",
                 admin.getId(),
                 admin.getName(),
                 admin.getEmail(),
                 admin.getPassword(),
-                admin.getRole()
+                admin.getRole(),
+                admin.getIsActive()
         );
     }
     public int count() {
@@ -51,10 +54,11 @@ public class AdminRepository {
     private final RowMapper<AdministradorEntitie> adminMapper = (rs, rowNum) -> {
         AdministradorEntitie a = new AdministradorEntitie();
         a.setId(rs.getString("id"));
-        a.setName(rs.getString("nome"));
+        a.setName(rs.getString("name"));
         a.setEmail(rs.getString("email"));
-        a.setPassword(rs.getString("senha"));
+        a.setPassword(rs.getString("password"));
         a.setRole(rs.getString("role"));
+        a.setIsActive(rs.getBoolean("active"));
         return a;
     };
 }

@@ -1,19 +1,49 @@
 package com.anime.Site.adapters.repository;
 
 import com.anime.Site.domain.entities.TokenEntitie;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TokenRepository extends MongoRepository<TokenEntitie, String> {
+public class TokenRepository {
+    private final JdbcTemplate jdbc;
 
-    boolean existsByAccessToken(String accessToken);
+    public TokenRepository(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
 
-    boolean existsByRefreshToken(String refreshToken);
+    public boolean existsByAccessToken(String accessToken) {
+        return jdbc.queryForObject("SELECT COUNT(*) FROM tokens WHERE access_token = ?", Integer.class, accessToken) > 0;
+    }
 
-    TokenEntitie findByRefreshToken(String refreshToken);
+    public boolean existsByRefreshToken(String refreshToken) {
+        return jdbc.queryForObject("SELECT COUNT(*) FROM tokens WHERE refresh_token = ?", Integer.class, refreshToken) > 0;
+    }
 
-    TokenEntitie findByAccessToken(String accessToken);
+    public TokenEntitie findByRefreshToken(String refreshToken) {
+        return jdbc.queryForObject("SELECT * FROM tokens WHERE refresh_token = ?", tokenMapper, refreshToken);
+    }
 
-    ;
+    public TokenEntitie findByAccessToken(String accessToken) {
+        return jdbc.queryForObject("SELECT * FROM tokens WHERE access_token = ?", tokenMapper, accessToken);
+    }
+
+    public TokenEntitie save(TokenEntitie token) {
+        jdbc.update("INSERT INTO tokens (access_token, refresh_token, email, expires_at, expires_refresh) VALUES (?, ?, ?, ?, ?)",
+                token.getAccessToken(), token.getRefreshToken(), token.getEmail(), token.getExpiresAt(), token.getExpiresRefresh());
+        return token;
+    }
+
+    private final RowMapper<TokenEntitie> tokenMapper = (rs, rowNum) -> {
+        TokenEntitie t = new TokenEntitie();
+        t.setAccessToken(rs.getString("access_token"));
+        t.setRefreshToken(rs.getString("refresh_token"));
+        t.setEmail(rs.getString("email"));
+        t.setExpiresAt(rs.getTimestamp("expires_at"));
+        t.setExpiresRefresh(rs.getTimestamp("expires_refresh"));
+        return t;
+    };
+
+
 }

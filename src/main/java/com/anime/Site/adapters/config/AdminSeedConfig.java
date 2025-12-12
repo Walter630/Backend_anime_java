@@ -21,8 +21,9 @@ public class AdminSeedConfig {
                 admin.setId(UUID.randomUUID().toString());
                 admin.setName("admin");
                 admin.setEmail("admin@site.com");          // Defina o email
-                admin.setPassword(encoder.encode("123456"));  // Defina a senha inicial
-                admin.setRole("ADMIN");                    // Role ADMIN
+                admin.setPassword(encoder.encode("123456"));  // Defina a senha inicial                 // Role ADMIN
+                admin.setIsActive(true);
+                admin.setRole("ADMIN");
                 adminRepository.save(admin);
                 System.out.println("Admin inicial criado: admin@site.com / 123456");
             }

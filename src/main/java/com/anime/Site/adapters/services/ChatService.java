@@ -1,7 +1,7 @@
 package com.anime.Site.adapters.services;
 
 import com.anime.Site.adapters.config.configRabbit.ConfigRabbit;
-import com.anime.Site.adapters.repository.ChatRepository;
+
 import com.anime.Site.domain.dto.ChatRequestDTO;
 import com.anime.Site.domain.entities.ChatEntitie;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -14,7 +14,7 @@ import java.util.List;
 public class ChatService {
 
     @Autowired
-    private ChatRepository chatRepository;
+    private com.anime.Site.adapters.repository.ChatRepository.ChatRepository chatRepository;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;

@@ -46,6 +46,7 @@ public class UserRepository {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
+                user.getIsActive(),
                 user.getPassword()
         );
     }
@@ -55,6 +56,7 @@ public class UserRepository {
         u.setId(rs.getString("id"));
         u.setName(rs.getString("name"));
         u.setEmail(rs.getString("email"));
+        u.setIsActive(rs.getBoolean("ativo"));
         u.setPassword(rs.getString("password"));
         return u;
     };

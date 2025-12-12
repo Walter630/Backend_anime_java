@@ -3,7 +3,6 @@ package com.anime.Site.domain.entities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +12,11 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class UserEntitie {
-    @Id
-
     private String id;
     private String name;
     private String email;
     private String password;
+    private Boolean isActive;
     private String role;
 
 
@@ -28,7 +26,7 @@ public class UserEntitie {
 
     @Override
     public String toString() {
-        return "UserEntitie [id=" + id + ", nome=" + name + ", email=" + email + ", senha=" + password + ", role=" + role
+        return "UserEntitie [id=" + id + ", nome=" + name + ", email=" + email + ", senha=" + password + ", role=" + role + ", ativo=" + isActive
                 + ", favoritos=" + favoritos + "]";
     }
 

@@ -14,4 +14,5 @@ public class RegisterDTO {
     private String name;
     private String email;
     private String password;
+    private Boolean isActive;
 }

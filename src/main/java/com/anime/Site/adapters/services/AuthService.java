@@ -22,7 +22,7 @@ public class AuthService {
     }
 
     public void registrar(RegisterDTO dto) {
-        if (administradorRepository.findByEmail(dto.getEmail()).isPresent()) {
+        if (administradorRepository.findByEmail(dto.getEmail()) != null) {
             throw new RuntimeException("Email já cadastrado!");
         }
 
@@ -31,21 +31,31 @@ public class AuthService {
         novoAdmin.setName(dto.getName());
         novoAdmin.setEmail(dto.getEmail());
         novoAdmin.setPassword(passwordEncoder.encode(dto.getPassword()));
+        novoAdmin.setIsActive(true);
 
         novoAdmin.setRole("USER");
         administradorRepository.save(novoAdmin);
     }
 
-    public AdministradorEntitie login(AdminDTO dto) {
-        AdministradorEntitie admin = administradorRepository.findByEmail(dto.email())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+        public AdministradorEntitie login(AdminDTO body) {
 
-        if (!passwordEncoder.matches(dto.password(), admin.getPassword())) {
-            throw new RuntimeException("Senha incorreta!");
+            AdministradorEntitie admin =
+                    administradorRepository.findByEmail(body.email());
+
+            if (admin == null) {
+                throw new RuntimeException("Usuário não encontrado");
+            }
+
+            if (!passwordEncoder.matches(body.password(), admin.getPassword())) {
+                throw new RuntimeException("Senha incorreta");
+            }
+
+            if (!admin.getIsActive()) {
+                throw new RuntimeException("Usuário inativo");
+            }
+
+            return admin;
         }
-
-        return admin;
-    }
 
     public List<AdministradorEntitie> listar(){
         return administradorRepository.findAll();
@@ -57,13 +67,14 @@ public class AuthService {
             throw new RuntimeException("Apenas admins podem criar outros admins!");
         }
 
-        if (administradorRepository.findByEmail(dto.email()).isPresent()) {
+        if (administradorRepository.findByEmail(dto.email()) != null) {
             throw new RuntimeException("Email já cadastrado!");
         }
 
         AdministradorEntitie novoAdmin = new AdministradorEntitie();
         novoAdmin.setEmail(dto.email());
         novoAdmin.setPassword(passwordEncoder.encode(dto.senha()));
+        novoAdmin.setIsActive(true);
         novoAdmin.setRole("ADMIN"); // sempre ADMIN
 
         administradorRepository.save(novoAdmin);

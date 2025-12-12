@@ -46,6 +46,8 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/auth/**",
                                 "/auth/register",
+                                "/auth/login",
+                                "/auth/listar",
                                 "/anime/listar",
                                 "/anime/*",
                                 "/v3/api-docs/**",
@@ -55,8 +57,8 @@ public class SecurityConfiguration {
                                 "/webjars/**"
                         ).permitAll()
                         // ROTAS PRIVADAS -----------------------
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new TokenFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
@@ -72,7 +74,6 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:5173");
-        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

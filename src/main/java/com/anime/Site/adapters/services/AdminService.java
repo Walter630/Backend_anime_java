@@ -18,7 +18,7 @@ public class AdminService {
     public Optional<AdministradorEntitie> buscarPorId(String id) {
       return adminRepository.findById(id);
     }
-    public Optional<AdministradorEntitie> buscarPorEmail(String email) {
+    public AdministradorEntitie buscarPorEmail(String email) {
       return adminRepository.findByEmail(email);
     }
     public void salvar(AdministradorEntitie admin) {

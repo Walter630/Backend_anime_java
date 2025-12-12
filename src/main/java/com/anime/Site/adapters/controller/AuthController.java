@@ -28,16 +28,16 @@ public class AuthController {
         return ResponseEntity.ok(authService.listar());
     }
     @PostMapping("/login")
-    public ResponseEntity<TokenEntitie> login(@RequestBody AdminDTO body) {
-        try{
-            // Busca usuário no banco
+    public ResponseEntity<?> login(@RequestBody AdminDTO body) {
+        try {
             AdministradorEntitie admin = authService.login(body);
-            var retorno = tokenService.gerarTokens(admin.getEmail(), admin.getRole());
-            return ResponseEntity.ok(retorno);
-        }catch(Exception e){
-            return ResponseEntity.badRequest().build();
+            TokenEntitie tokens = tokenService.gerarTokens(admin.getEmail(), admin.getRole());
+            return ResponseEntity.ok(tokens);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(e.getMessage());
         }
     }
+
     @PostMapping("/register")
     public ResponseEntity<String> registrar(@RequestBody RegisterDTO body) {
         try{
@@ -49,14 +49,18 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> refreshToken(@RequestBody String email) {
+    public ResponseEntity<?> refreshToken(
+            @RequestHeader("Authorization") String authHeader
+    ) {
         try {
-            String token = tokenService.refreshAccessToken(email);
-            return ResponseEntity.ok(token);
+            String refreshToken = authHeader.replace("Bearer ", "");
+            String newAccessToken = tokenService.refreshAccessToken(refreshToken);
+            return ResponseEntity.ok(newAccessToken);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
+
 
     @PostMapping("/register/admin")
     public ResponseEntity<String> registrarAdmin(

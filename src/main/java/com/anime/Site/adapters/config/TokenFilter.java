@@ -38,6 +38,8 @@ public class TokenFilter extends OncePerRequestFilter {
                 path.startsWith("/swagger-ui") ||
                 path.equals("/swagger-ui.html") ||
                 path.startsWith("/swagger-resources") ||
+                path.startsWith("/register") ||
+                path.startsWith("/listar") ||
                 path.startsWith("/webjars")) {
             filterChain.doFilter(request, response);
             return; // ✅ ignora o filtro
