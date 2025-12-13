@@ -44,4 +44,11 @@ public class UserService {
 
         return animesRepository.findByFavorito(user.getFavoritos());
     }
+
+    public UserEntitie tempoDeUso(String email){
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        user.setTempoDeUso(user.getTempoDeUso() + 1);
+        return userRepository.save(user);
+    };
 }

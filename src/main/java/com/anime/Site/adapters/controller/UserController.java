@@ -2,6 +2,7 @@ package com.anime.Site.adapters.controller;
 
 import com.anime.Site.adapters.services.UserService;
 import com.anime.Site.domain.entities.AnimesEntitie;
+import com.anime.Site.domain.entities.UserEntitie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,5 +25,10 @@ public class UserController {
     @GetMapping("/favoritos")
     public ResponseEntity<List<AnimesEntitie>> listarFavoritos(@AuthenticationPrincipal String emailDoUser) {
         return ResponseEntity.ok(userService.listarFavoritos(emailDoUser));
+    }
+
+    @GetMapping("/tempoDeUso")
+    public ResponseEntity<UserEntitie> tempoDeUso(@AuthenticationPrincipal String emailDoUser) {
+        return ResponseEntity.ok(userService.tempoDeUso(emailDoUser));
     }
 }

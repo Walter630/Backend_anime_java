@@ -22,6 +22,8 @@ public class UserEntitie {
     private String senha;
     private String role;
 
+    private Integer tempoDeUso;
+
     private List<String> favoritos = new ArrayList<>();
     public UserEntitie() {
     }
@@ -34,5 +36,8 @@ public class UserEntitie {
 
     public List<String> getFavoritos() {
         return favoritos;
+    }
+    public Integer getTempoDeUso() {
+        return tempoDeUso;
     }
 }
