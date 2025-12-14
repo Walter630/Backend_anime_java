@@ -1,9 +1,11 @@
 package com.anime.Site.domain.entities;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
+
+import java.util.UUID;
 
 
 @Getter
@@ -11,6 +13,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MangasEntities {
     private String id;
+
+    public MangasEntities() {
+        this.id = UUID.randomUUID().toString();
+    }
     private String nome;
     private String genero;
     private String sinopse;
@@ -18,6 +24,4 @@ public class MangasEntities {
     private String status;
     private String imagem;
 
-    public MangasEntities() {
-    }
 }

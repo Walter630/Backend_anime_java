@@ -16,7 +16,7 @@ public class AnimeController {
     @Autowired
     private AnimesService animesService;
 
-    @PostMapping("/cadastrar")
+    @PostMapping("/register")
     public ResponseEntity<AnimesEntitie> cadastrarAnime(@RequestBody AnimesEntitie animeDto) {
         try {
             AnimesEntitie salvo = animesService.save(animeDto);
@@ -26,7 +26,7 @@ public class AnimeController {
         }
     }
 
-    @GetMapping("/listar")
+    @GetMapping("/getAll")
     public ResponseEntity<List<AnimesEntitie>> getAnimes() throws Exception {
         return ResponseEntity.ok(animesService.findAll());
     }
@@ -42,12 +42,12 @@ public class AnimeController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/buscar_por_nome")
+    @GetMapping("/getByName")
     public ResponseEntity<Optional<AnimesEntitie>> buscarAnimeNome(@RequestParam String nome) {
         return ResponseEntity.ok(animesService.findByNome(nome));
     }
 
-    @PostMapping("/anime/{id}/addVideo")
+    @PostMapping("/anime/{id}/addPlay")
     public ResponseEntity<String> addVideo(
             @PathVariable String id,
             @RequestBody Map<String, String> body

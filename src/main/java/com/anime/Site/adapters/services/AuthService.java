@@ -5,6 +5,7 @@ import com.anime.Site.domain.dto.AdminDTO;
 import com.anime.Site.domain.dto.AdminRegistrarDTO;
 import com.anime.Site.domain.dto.RegisterDTO;
 import com.anime.Site.domain.entities.AdministradorEntitie;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ public class AuthService {
 
     private final AdminRepository administradorRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private TokenService tokenService;
 
     public AuthService(AdminRepository administradorRepository) {
         this.administradorRepository = administradorRepository;
@@ -80,5 +82,11 @@ public class AuthService {
         administradorRepository.save(novoAdmin);
     }
 
-
+    public DecodedJWT verificarToken(String token) {
+        try {
+            return tokenService.verificarAccessToken(token);
+        } catch (Exception e) {
+            throw new RuntimeException("Token inválido!");
+        }
+    }
 }

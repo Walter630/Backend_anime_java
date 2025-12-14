@@ -23,7 +23,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/listar")
+    @GetMapping("/findAll")
     public ResponseEntity<List<AdministradorEntitie>> getAuth() {
         return ResponseEntity.ok(authService.listar());
     }
@@ -56,6 +56,16 @@ public class AuthController {
             String refreshToken = authHeader.replace("Bearer ", "");
             String newAccessToken = tokenService.refreshAccessToken(refreshToken);
             return ResponseEntity.ok(newAccessToken);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/verify-token")
+    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String token) {
+        try {
+            authService.verificarToken(token);
+            return ResponseEntity.ok("Token válido!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

@@ -1,19 +1,25 @@
 package com.anime.Site.domain.entities;
 
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
+import java.util.UUID;
 
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class ChatEntitie {
 
     private String id;
+
+    public ChatEntitie() {
+        this.id = UUID.randomUUID().toString();
+    }
     private String mensagem;
 
     private String usuarioId;

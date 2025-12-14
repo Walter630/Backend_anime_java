@@ -1,7 +1,6 @@
 package com.anime.Site.adapters.repository;
 
 import com.anime.Site.domain.entities.MangasEntities;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -37,8 +36,8 @@ public class MangasRepository {
     }
     public MangasEntities save(MangasEntities manga) {
         jdbc.update(
-                "INSERT INTO mangas (id, nome, genero, sinopse, data_lancamento, status, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                manga.getId(),
+                "INSERT INTO mangas (nome, genero, sinopse, data_lancamento, status, imagem) VALUES (?, ?, ?, ?, ?, ?)",
+
                 manga.getNome(),
                 manga.getGenero(),
                 manga.getSinopse(),

@@ -1,20 +1,26 @@
 package com.anime.Site.domain.entities;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class AnimesEntitie {
-    private Long id;
+    private String id;
 
-    private String nome;
+    public AnimesEntitie() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    private String name;
     private String genero;
     private String sinopse;
     private String dataLancamento;

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT NOT NULL,
     role TEXT NOT NULL,
     active BOOLEAN NOT NULL,
-    favoritos TEXT
+    favoritos BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS animes (
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS videos (
     id TEXT PRIMARY KEY,
     anime_id TEXT NOT NULL,
     numero INTEGER NOT NULL,
-    titulo TEXT,
+    titulo TEXT NOT NULL,
     video_url TEXT NOT NULL
 );
 
@@ -45,17 +45,6 @@ CREATE TABLE IF NOT EXISTS administradores (
     role TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS chat (
-    id TEXT PRIMARY KEY,
-    mensagem TEXT NOT NULL,
-    usuario_id TEXT NOT NULL,
-    anime_id TEXT NOT NULL,
-    data_criacao TEXT NOT NULL,
-    data_edicao TEXT,
-    likes INTEGER DEFAULT 0,
-    dislikes INTEGER DEFAULT 0,
-    ativo INTEGER NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS tokens (
     id TEXT PRIMARY KEY,

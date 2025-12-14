@@ -1,7 +1,6 @@
 package com.anime.Site.adapters.repository;
 
 import com.anime.Site.domain.entities.AdministradorEntitie;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -39,7 +38,7 @@ public class AdminRepository {
     }
     public void save(AdministradorEntitie admin) {
         jdbc.update(
-                "INSERT INTO administradores (id, name, email, password, role, active) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO administradores (id, name, email, password, role, active) VALUES (?,?, ?, ?, ?, ?)",
                 admin.getId(),
                 admin.getName(),
                 admin.getEmail(),

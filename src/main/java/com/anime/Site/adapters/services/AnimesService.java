@@ -1,5 +1,7 @@
 package com.anime.Site.adapters.services;
 
+import com.anime.Site.adapters.rabbit.outbound.AnimeCreateEvent;
+import com.anime.Site.adapters.rabbit.outbound.AnimeCreateProducer;
 import com.anime.Site.adapters.repository.AnimesRepository;
 import com.anime.Site.domain.entities.AnimesEntitie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import java.util.Optional;
 public class AnimesService {
     @Autowired
     private AnimesRepository animesRepository;
+    @Autowired
+    private AnimeCreateProducer producer;
 
     public List<AnimesEntitie> findAll() throws Exception {
         return animesRepository.findAll();
@@ -36,16 +40,20 @@ public class AnimesService {
         // Pega a role do usuário logado
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
+
         if (authentication == null || authentication.getAuthorities().stream()
                 .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             throw new RuntimeException("Usuário sem permissão para cadastrar anime!");
         }
 
-        if (animesRepository.findByNome(animeDto.getNome()).isPresent()) {
+        if (animesRepository.findByNome(animeDto.getName()).isPresent()) {
             throw new RuntimeException("Anime já cadastrado!");
         }
 
-        return animesRepository.save(animeDto);
+        AnimesEntitie saved = animesRepository.save(animeDto);
+        producer.send(new AnimeCreateEvent(animeDto.getId(), animeDto.getName()));
+
+        return saved;
 
     }
 

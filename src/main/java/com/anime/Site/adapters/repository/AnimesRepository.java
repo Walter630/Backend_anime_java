@@ -13,8 +13,8 @@ public class AnimesRepository {
     private final JdbcTemplate jdbc;
     private final RowMapper<AnimesEntitie> animesMapper = (rs, rowNum) -> {
         AnimesEntitie anime = new AnimesEntitie();
-        anime.setId(rs.getLong("id"));
-        anime.setNome(rs.getString("nome"));
+        anime.setId(rs.getString("id"));
+        anime.setName(rs.getString("nome"));
         anime.setGenero(rs.getString("genero"));
         anime.setSinopse(rs.getString("sinopse"));
         anime.setDataLancamento(rs.getString("data_lancamento"));
@@ -78,7 +78,7 @@ public class AnimesRepository {
         jdbc.update(
                 "INSERT INTO animes (id, nome, genero, sinopse, data_lancamento, status, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 anime.getId(),
-                anime.getNome(),
+                anime.getName(),
                 anime.getGenero(),
                 anime.getSinopse(),
                 anime.getDataLancamento(),
