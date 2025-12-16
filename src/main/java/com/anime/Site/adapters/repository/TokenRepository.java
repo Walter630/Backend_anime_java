@@ -9,12 +9,25 @@ import org.springframework.stereotype.Repository;
 public class TokenRepository {
     private final JdbcTemplate jdbc;
 
+    private final RowMapper<TokenEntitie> tokenMapper = (rs, rowNum) -> {
+        TokenEntitie t = new TokenEntitie();
+        t.setAccessToken(rs.getString("access_token"));
+        t.setRefreshToken(rs.getString("refresh_token"));
+        t.setEmail(rs.getString("email"));
+        t.setExpiresAt(rs.getTimestamp("expires_at"));
+        t.setExpiresRefresh(rs.getTimestamp("expires_refresh"));
+        return t;
+    };
     public TokenRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
 
     public boolean existsByAccessToken(String accessToken) {
         return jdbc.queryForObject("SELECT COUNT(*) FROM tokens WHERE access_token = ?", Integer.class, accessToken) > 0;
+    }
+
+    public TokenEntitie findByEmail(String email) {
+        return jdbc.queryForObject("SELECT access_token FROM tokens WHERE email = ?",tokenMapper, email);
     }
 
     public boolean existsByRefreshToken(String refreshToken) {
@@ -35,15 +48,7 @@ public class TokenRepository {
         return token;
     }
 
-    private final RowMapper<TokenEntitie> tokenMapper = (rs, rowNum) -> {
-        TokenEntitie t = new TokenEntitie();
-        t.setAccessToken(rs.getString("access_token"));
-        t.setRefreshToken(rs.getString("refresh_token"));
-        t.setEmail(rs.getString("email"));
-        t.setExpiresAt(rs.getTimestamp("expires_at"));
-        t.setExpiresRefresh(rs.getTimestamp("expires_refresh"));
-        return t;
-    };
+
 
 
 }

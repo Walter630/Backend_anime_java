@@ -3,6 +3,7 @@ package com.anime.Site.adapters.services;
 import com.anime.Site.adapters.rabbit.outbound.AnimeCreateEvent;
 import com.anime.Site.adapters.rabbit.outbound.AnimeCreateProducer;
 import com.anime.Site.adapters.repository.AnimesRepository;
+import com.anime.Site.domain.dto.PagedResult;
 import com.anime.Site.domain.entities.AnimesEntitie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,18 @@ public class AnimesService {
 
     public List<AnimesEntitie> findAll() throws Exception {
         return animesRepository.findAll();
+    }
+
+    public PagedResult<AnimesEntitie> findAllPage(int page, int size, String sortBy) {
+        List<AnimesEntitie> animes = animesRepository.findAllPage(page, size, sortBy);
+        int total = animesRepository.countAll();
+        return new PagedResult<>(animes, total, page, size, 0);
+    }
+
+    public PagedResult<AnimesEntitie> findByNamePage(String name, int page, int size) {
+        List<AnimesEntitie> animes = animesRepository.findByNamePage(name, page, size);
+        int total = animesRepository.countByName(name);
+        return new PagedResult<>(animes, total, page, size, 0);
     }
 
     public Optional<AnimesEntitie> findByNome(String nome) {

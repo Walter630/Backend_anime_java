@@ -17,10 +17,11 @@ public class AuthService {
 
     private final AdminRepository administradorRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private TokenService tokenService;
+    private final TokenService tokenService;
 
-    public AuthService(AdminRepository administradorRepository) {
+    public AuthService(AdminRepository administradorRepository, TokenService tokenService) {
         this.administradorRepository = administradorRepository;
+        this.tokenService = tokenService;
     }
 
     public void registrar(RegisterDTO dto) {
@@ -82,11 +83,19 @@ public class AuthService {
         administradorRepository.save(novoAdmin);
     }
 
+    public void IsValidateRefreshToken(String token) {
+        tokenService.isValidateRefreshToken(token);
+    }
+
     public DecodedJWT verificarToken(String token) {
         try {
             return tokenService.verificarAccessToken(token);
         } catch (Exception e) {
             throw new RuntimeException("Token inválido!");
         }
+    }
+
+    public AdministradorEntitie findByEmail(String email) {
+        return administradorRepository.findByEmail(email);
     }
 }

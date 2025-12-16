@@ -22,7 +22,34 @@ public class AnimesRepository {
         anime.setImagem(rs.getString("imagem"));
         return anime;
     };
-
+// Buscar todos os animes paginados e ordenados pelo campo passado por parâmetro
+    public List<AnimesEntitie> findAllPage(int page, int size, String sortBy) {
+        int offset = page * size;
+        String sql = String.format("SELECT * FROM animes ORDER BY %s LIMIT %d OFFSET %d",
+                sortBy, size, offset) ;
+        return jdbc.query(sql, animesMapper);
+    }
+    // Contar todos os animes na tabela
+    public int countAll() {
+        return jdbc.queryForObject("SELECT COUNT(*) FROM animes",
+                Integer.class
+        );
+    }
+    // Buscar animes com o nome parecido com o passado por parâmetro, paginando os resultados
+    public List<AnimesEntitie> findByNamePage(String name, int page, int size) {
+        int offset = page * size;
+        String sql = String.format("SELECT * FROM animes WHERE nome LIKE ? LIMIT %d OFFSET %d",
+                size, offset);
+        return jdbc.query(sql, animesMapper, "%" + name + "%");
+    }
+    // Contar quantos animes existem com o nome parecido com o passado por parâmetro
+    public int countByName(String name) {
+        return jdbc.queryForObject(
+                "SELECT COUNT(*) FROM animes WHERE nome LIKE ?",
+                Integer.class,
+                "%" + name + "%"
+        );
+    }
     public AnimesRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }

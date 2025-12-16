@@ -1,6 +1,7 @@
 package com.anime.Site.adapters.controller;
 
 import com.anime.Site.adapters.services.AnimesService;
+import com.anime.Site.domain.dto.PagedResult;
 import com.anime.Site.domain.entities.AnimesEntitie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,16 @@ public class AnimeController {
     @GetMapping("/getAll")
     public ResponseEntity<List<AnimesEntitie>> getAnimes() throws Exception {
         return ResponseEntity.ok(animesService.findAll());
+    }
+
+    @GetMapping("/getAllPage")
+    public ResponseEntity<PagedResult<AnimesEntitie>> getAnimesPage(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String sortBy
+    ) {
+        var result = animesService.findAllPage(page, size, sortBy);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")

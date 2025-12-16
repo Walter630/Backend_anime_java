@@ -135,5 +135,52 @@ public class TokenService {
 
         return newAccess;
     }
-}
+
+    // ===========================
+    // VALIDAR REFRESH TOKEN
+    // ===========================
+    public boolean isValidateRefreshToken(String refreshToken) {
+        try {
+            // verifica se existe no banco
+            TokenEntitie t = tokenRepository.findByRefreshToken(refreshToken);
+            if (t == null)
+                return false;
+
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+            JWT.require(algorithm)
+                    .withClaim("type", "refresh")
+                    .acceptLeeway(1)
+                    .build()
+                    .verify(refreshToken);
+
+            return true;
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+        }
+
+        public void generateAcessToken(String email, String role) {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+            // ACCESS TOKEN (curto)
+            Instant accessExp = LocalDateTime.now()
+                    .plusMinutes(expirationMinutes)
+                    .toInstant(ZoneOffset.of("-03:00"));
+
+            String accessToken = JWT.create()
+                    .withSubject(email)
+                    .withClaim("role", role)
+                    .withClaim("type", "access")
+                    .withExpiresAt(accessExp)
+                    .sign(algorithm);
+
+            // salva no banco
+            TokenEntitie entity = tokenRepository.findByEmail(email);
+            entity.setAccessToken(accessToken);
+            entity.setExpiresAt(Date.from(accessExp));
+
+            tokenRepository.save(entity);
+        }
+    }
 
