@@ -10,21 +10,15 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-
 public class TokenEntitie {
+    private String id = UUID.randomUUID().toString(); // ✅ Default no campo
+    private String accessToken;
+    private String refreshToken;
+    private String email;
+    private Date expiresAt;
+    private Date expiresRefresh;
 
-    private String id;
-
-    public TokenEntitie() {
-        this.id = UUID.randomUUID().toString();
-    }
-    private String accessToken;      // Token de acesso curto (5–15 min)
-    private String refreshToken;     // Token de refresh longo (dias)
-    private String email;            // Dono do token
-
-    private Date expiresAt;          // Expiração do accessToken
-    private Date expiresRefresh;     // Expiração do refreshToken
-
-
-
+    // Construtor vazio SEM sobrescrever id
+    public TokenEntitie() {} // ✅ Remove o construtor que força UUID
 }
+

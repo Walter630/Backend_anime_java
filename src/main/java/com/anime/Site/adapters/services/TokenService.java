@@ -1,6 +1,5 @@
 package com.anime.Site.adapters.services;
 
-import com.anime.Site.adapters.repository.TokenRepository;
 import com.anime.Site.domain.entities.TokenEntitie;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -16,30 +15,22 @@ import java.util.Date;
 
 @Service
 public class TokenService {
-
-    private final TokenRepository tokenRepository;
-
     @Value("${jwt.secret}")
     private String secretKey;
 
     @Value("${jwt.expiration}")
-    private Long expirationMinutes; // expiração do ACCESS TOKEN
+    private Long expirationMinutes;
 
     @Value("${jwt.refresh}")
-    private Long refreshDays; // expiração do REFRESH TOKEN
-
-    public TokenService(TokenRepository tokenRepository) {
-        this.tokenRepository = tokenRepository;
-    }
+    private Long refreshDays;
 
     // ===========================
-    // GERAR ACCESS + REFRESH
+    // GERAR ACCESS + REFRESH (SEM BANCO)
     // ===========================
     public TokenEntitie gerarTokens(String email, String role) {
-
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-        // ACCESS TOKEN (curto)
+        // ACCESS
         Instant accessExp = LocalDateTime.now()
                 .plusMinutes(expirationMinutes)
                 .toInstant(ZoneOffset.of("-03:00"));
@@ -51,7 +42,7 @@ public class TokenService {
                 .withExpiresAt(accessExp)
                 .sign(algorithm);
 
-        // REFRESH TOKEN (longo)
+        // REFRESH
         Instant refreshExp = LocalDateTime.now()
                 .plusDays(refreshDays)
                 .toInstant(ZoneOffset.of("-03:00"));
@@ -62,7 +53,6 @@ public class TokenService {
                 .withExpiresAt(refreshExp)
                 .sign(algorithm);
 
-        // salva no banco
         TokenEntitie entity = new TokenEntitie();
         entity.setEmail(email);
         entity.setAccessToken(accessToken);
@@ -70,117 +60,69 @@ public class TokenService {
         entity.setExpiresAt(Date.from(accessExp));
         entity.setExpiresRefresh(Date.from(refreshExp));
 
-        tokenRepository.save(entity);
-
         return entity;
     }
 
     // ===========================
-    // VALIDAR ACCESS TOKEN
+    // VALIDAR ACCESS TOKEN (SEM BANCO)
     // ===========================
     public DecodedJWT verificarAccessToken(String token) {
-
-        // verifica se existe no banco
-        TokenEntitie t = tokenRepository.findByAccessToken(token);
-        if (t == null)
-            throw new JWTVerificationException("Token não encontrado.");
-
-        Algorithm algorithm = Algorithm.HMAC256(secretKey);
-
-        return JWT.require(algorithm)
-                .withClaim("type", "access")
-                .acceptLeeway(1)
-                .build()
-                .verify(token);
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            System.out.println("depois do algoritmo"+algorithm);
+            return JWT.require(algorithm)
+                    .withClaim("type", "access")
+                    .acceptLeeway(1)
+                    .build()
+                    .verify(token);
+        } catch (JWTVerificationException e) {
+            throw new JWTVerificationException("Token inválido: " + e.getMessage());
+        }
     }
 
     // ===========================
-    // GERAR NOVO ACCESS PELO REFRESH
-    // ===========================
-    public String refreshAccessToken(String refreshToken) {
-
-        // valida refresh
-        TokenEntitie tokenDb = tokenRepository.findByRefreshToken(refreshToken);
-
-        if (tokenDb == null) {
-            throw new JWTVerificationException("Refresh token inválido.");
-        }
-
-        if (tokenDb.getExpiresRefresh().before(new Date())) {
-            throw new JWTVerificationException("Refresh token expirado. Faça login novamente.");
-        }
-
-        Algorithm algorithm = Algorithm.HMAC256(secretKey);
-
-        String newAccess = JWT.create()
-                .withSubject(tokenDb.getEmail())
-                .withClaim("type", "access")
-                .withExpiresAt(
-                        LocalDateTime.now()
-                                .plusMinutes(expirationMinutes)
-                                .toInstant(ZoneOffset.of("-03:00"))
-                )
-                .sign(algorithm);
-
-        // atualiza no banco
-        tokenDb.setAccessToken(newAccess);
-        tokenDb.setExpiresAt(
-                Date.from(
-                        LocalDateTime.now().plusMinutes(expirationMinutes)
-                                .toInstant(ZoneOffset.of("-03:00"))
-                )
-        );
-
-        tokenRepository.save(tokenDb);
-
-        return newAccess;
-    }
-
-    // ===========================
-    // VALIDAR REFRESH TOKEN
+    // VALIDAR REFRESH TOKEN (SEM BANCO)
     // ===========================
     public boolean isValidateRefreshToken(String refreshToken) {
         try {
-            // verifica se existe no banco
-            TokenEntitie t = tokenRepository.findByRefreshToken(refreshToken);
-            if (t == null)
-                return false;
-
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
-
             JWT.require(algorithm)
                     .withClaim("type", "refresh")
                     .acceptLeeway(1)
                     .build()
                     .verify(refreshToken);
-
             return true;
         } catch (JWTVerificationException e) {
             return false;
         }
-        }
+    }
 
-        public void generateAcessToken(String email, String role) {
+    // ===========================
+    // REFRESH ACCESS (SEM BANCO - só gera novo)
+    // ===========================
+    public String refreshAccessToken(String refreshToken) {
+        try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            DecodedJWT decoded = JWT.require(algorithm)
+                    .withClaim("type", "refresh")
+                    .build()
+                    .verify(refreshToken);
 
-            // ACCESS TOKEN (curto)
+            String email = decoded.getSubject();
+
+            // Gera novo access token
             Instant accessExp = LocalDateTime.now()
                     .plusMinutes(expirationMinutes)
                     .toInstant(ZoneOffset.of("-03:00"));
 
-            String accessToken = JWT.create()
+            return JWT.create()
                     .withSubject(email)
-                    .withClaim("role", role)
                     .withClaim("type", "access")
                     .withExpiresAt(accessExp)
                     .sign(algorithm);
 
-            // salva no banco
-            TokenEntitie entity = tokenRepository.findByEmail(email);
-            entity.setAccessToken(accessToken);
-            entity.setExpiresAt(Date.from(accessExp));
-
-            tokenRepository.save(entity);
+        } catch (JWTVerificationException e) {
+            throw new JWTVerificationException("Refresh token inválido: " + e.getMessage());
         }
     }
-
+}

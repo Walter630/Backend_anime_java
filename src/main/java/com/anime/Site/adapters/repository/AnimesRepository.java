@@ -45,7 +45,7 @@ public class AnimesRepository {
     // Contar quantos animes existem com o nome parecido com o passado por parâmetro
     public int countByName(String name) {
         return jdbc.queryForObject(
-                "SELECT COUNT(*) FROM animes WHERE nome LIKE ?",
+                "SELECT COUNT(*) FROM animes WHERE name LIKE ?",
                 Integer.class,
                 "%" + name + "%"
         );
@@ -68,7 +68,7 @@ public class AnimesRepository {
 
     public Optional<AnimesEntitie> findByNome(String nome) {
         List<AnimesEntitie> list = jdbc.query(
-                "SELECT * FROM animes WHERE nome = ?",
+                "SELECT * FROM animes WHERE name = ?",
                 animesMapper,
                 nome
         );
@@ -103,14 +103,16 @@ public class AnimesRepository {
 
     public AnimesEntitie save(AnimesEntitie anime) {
         jdbc.update(
-                "INSERT INTO animes (id, nome, genero, sinopse, data_lancamento, status, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO animes (id, name, genero, sinopse, data_lancamento, favorito, status, imagem, videos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 anime.getId(),
                 anime.getName(),
                 anime.getGenero(),
                 anime.getSinopse(),
                 anime.getDataLancamento(),
                 anime.getStatus(),
-                anime.getImagem()
+                anime.getImagem(),
+                anime.getFavorito(),
+                anime.getVideos()
         );
         return anime;
     }

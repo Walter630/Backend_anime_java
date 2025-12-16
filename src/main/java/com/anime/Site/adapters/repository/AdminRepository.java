@@ -12,6 +12,16 @@ import java.util.Optional;
 public class AdminRepository {
     private final JdbcTemplate jdbc;
 
+    private final RowMapper<AdministradorEntitie> adminMapper = (rs, rowNum) -> {
+        AdministradorEntitie a = new AdministradorEntitie();
+        a.setId(rs.getString("id"));
+        a.setName(rs.getString("name"));
+        a.setEmail(rs.getString("email"));
+        a.setPassword(rs.getString("password"));
+        a.setRole(rs.getString("role"));
+        a.setIsActive(rs.getBoolean("active"));
+        return a;
+    };
     public AdminRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
@@ -50,14 +60,5 @@ public class AdminRepository {
     public int count() {
         return jdbc.queryForObject("SELECT COUNT(*) FROM administradores", Integer.class);
     }
-    private final RowMapper<AdministradorEntitie> adminMapper = (rs, rowNum) -> {
-        AdministradorEntitie a = new AdministradorEntitie();
-        a.setId(rs.getString("id"));
-        a.setName(rs.getString("name"));
-        a.setEmail(rs.getString("email"));
-        a.setPassword(rs.getString("password"));
-        a.setRole(rs.getString("role"));
-        a.setIsActive(rs.getBoolean("active"));
-        return a;
-    };
+
 }

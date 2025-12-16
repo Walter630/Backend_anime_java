@@ -3,8 +3,10 @@ package com.anime.Site.adapters.controller;
 import com.anime.Site.adapters.services.AnimesService;
 import com.anime.Site.domain.dto.PagedResult;
 import com.anime.Site.domain.entities.AnimesEntitie;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +19,16 @@ public class AnimeController {
     @Autowired
     private AnimesService animesService;
 
+
     @PostMapping("/register")
-    public ResponseEntity<AnimesEntitie> cadastrarAnime(@RequestBody AnimesEntitie animeDto) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> cadastrarAnime(@Valid @RequestBody AnimesEntitie animeDto) {
         try {
             AnimesEntitie salvo = animesService.save(animeDto);
+            System.out.println("Anime salvo: " + salvo);
             return ResponseEntity.ok(salvo);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

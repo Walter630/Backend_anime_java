@@ -5,6 +5,8 @@ import com.anime.Site.domain.dto.AdminDTO;
 import com.anime.Site.domain.dto.AdminRegistrarDTO;
 import com.anime.Site.domain.dto.RegisterDTO;
 import com.anime.Site.domain.entities.AdministradorEntitie;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -87,13 +89,17 @@ public class AuthService {
         tokenService.isValidateRefreshToken(token);
     }
 
-    public DecodedJWT verificarToken(String token) {
+    // AuthService
+    public DecodedJWT verificarToken(String tokenPuro) {
         try {
-            return tokenService.verificarAccessToken(token);
+            // AQUI NÃO TEM MAIS "Bearer " NEM substring
+            System.out.println(tokenPuro);
+            return tokenService.verificarAccessToken(tokenPuro);
         } catch (Exception e) {
             throw new RuntimeException("Token inválido!");
         }
     }
+
 
     public AdministradorEntitie findByEmail(String email) {
         return administradorRepository.findByEmail(email);

@@ -13,7 +13,15 @@ import java.util.Optional;
 public class UserRepository {
 
     private final JdbcTemplate jdbc;
-
+    private final RowMapper<UserEntitie> userMapper = (rs, rowNum) -> {
+        UserEntitie u = new UserEntitie();
+        u.setId(rs.getString("id"));
+        u.setName(rs.getString("name"));
+        u.setEmail(rs.getString("email"));
+        u.setIsActive(rs.getBoolean("ativo"));
+        u.setPassword(rs.getString("password"));
+        return u;
+    };
     public UserRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
@@ -51,14 +59,6 @@ public class UserRepository {
         );
     }
 
-    private final RowMapper<UserEntitie> userMapper = (rs, rowNum) -> {
-        UserEntitie u = new UserEntitie();
-        u.setId(rs.getString("id"));
-        u.setName(rs.getString("name"));
-        u.setEmail(rs.getString("email"));
-        u.setIsActive(rs.getBoolean("ativo"));
-        u.setPassword(rs.getString("password"));
-        return u;
-    };
+
 }
 

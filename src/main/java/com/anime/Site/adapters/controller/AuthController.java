@@ -36,14 +36,16 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody AdminDTO body, HttpServletResponse response) {
         try {
             AdministradorEntitie admin = authService.login(body);
+            System.out.println(admin);
             TokenEntitie tokens = tokenService.gerarTokens(admin.getEmail(), admin.getRole());
+            System.out.println(tokens);
 
             // Define o cookie de refresh token
             jakarta.servlet.http.Cookie refreshTokenCookie = new jakarta.servlet.http.Cookie("refreshToken", tokens.getRefreshToken());
             refreshTokenCookie.setHttpOnly(true);
             refreshTokenCookie.setSecure(false);
             refreshTokenCookie.setPath("/"); // Disponível para todo o domínio
-            refreshTokenCookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(7)); // 7 dias
+            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60 * 1000); // 7 dias
             response.addCookie(refreshTokenCookie);
             return ResponseEntity.ok(Map.of("accessToken", tokens.getAccessToken()));
         } catch (Exception e) {
@@ -55,6 +57,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> registrar(@RequestBody RegisterDTO body) {
         try {
+            
             authService.registrar(body);
             return ResponseEntity.ok("Usuario registrado com sucesso!");
         } catch (Exception e) {
@@ -71,7 +74,6 @@ public class AuthController {
             if (refreshToken == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token não encontrado");
             }
-
 
             String newAccessToken = tokenService.refreshAccessToken(refreshToken);
             return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
@@ -91,15 +93,24 @@ public class AuthController {
         return null;
     }
 
+    // AuthController
     @GetMapping("/verify-token")
-    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String tokenHeader) {
         try {
+            if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token ausente ou mal formatado");
+            }
+            System.out.println(tokenHeader);
+            String token = tokenHeader.substring(7); // aqui vira token puro
+            System.out.println("asdas"+token);
             authService.verificarToken(token);
             return ResponseEntity.ok("Token válido!");
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
+
 
 
     @PostMapping("/register/admin")

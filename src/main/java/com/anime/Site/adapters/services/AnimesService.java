@@ -53,7 +53,6 @@ public class AnimesService {
         // Pega a role do usuário logado
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-
         if (authentication == null || authentication.getAuthorities().stream()
                 .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             throw new RuntimeException("Usuário sem permissão para cadastrar anime!");
@@ -65,7 +64,7 @@ public class AnimesService {
 
         AnimesEntitie saved = animesRepository.save(animeDto);
         producer.send(new AnimeCreateEvent(animeDto.getId(), animeDto.getName()));
-
+        System.out.println("Anime salvo: " + saved);
         return saved;
 
     }

@@ -49,7 +49,6 @@ public class SecurityConfiguration {
                                 "/auth/login",
                                 "/auth/listar",
                                 "/anime/listar",
-                                "/anime/*",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
@@ -57,6 +56,7 @@ public class SecurityConfiguration {
                                 "/webjars/**"
                         ).permitAll()
                         // ROTAS PRIVADAS -----------------------
+                        .requestMatchers("/anime/register").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
