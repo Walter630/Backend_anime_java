@@ -32,7 +32,9 @@ public class TokenFilter extends OncePerRequestFilter {
 
         // rotas públicas que não precisam de token
         if (path.startsWith("/auth") ||
-                path.startsWith("/anime/listar") ||
+                path.startsWith("/anime/findAll") ||
+                path.startsWith("/anime/getAllPage") ||
+                path.matches("/anime/[^/]+") || // corresponde a /anime/{id} ||
                 path.startsWith("/v3/api-docs") ||
                 path.startsWith("/swagger-ui") ||
                 path.equals("/swagger-ui.html") ||

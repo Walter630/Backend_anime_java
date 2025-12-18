@@ -19,7 +19,7 @@ public class AnimesService {
     @Autowired
     private AnimeCreateProducer producer;
 
-    public List<AnimesEntitie> findAll() throws Exception {
+    public List<AnimesEntitie> findAll() {
         return animesRepository.findAll();
     }
 
@@ -69,12 +69,12 @@ public class AnimesService {
 
     }
 
-    public void findById(String id) {
-        animesRepository.findById(id);
+    public List<AnimesEntitie> findById(String id) {
+        return animesRepository.findById(id);
     }
 
     public void addVideo(String animeId, String videoUrl) {
-        var anime = animesRepository.findById(animeId)
+        var anime = animesRepository.findById(animeId).stream().findFirst()
                 .orElseThrow(() -> new RuntimeException("Anime não encontrado"));
 
         anime.getVideos().add(videoUrl);

@@ -33,8 +33,8 @@ public class AnimeController {
         }
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<AnimesEntitie>> getAnimes() throws Exception {
+    @GetMapping("/findAll")
+    public ResponseEntity<List<AnimesEntitie>> getAnimes() {
         return ResponseEntity.ok(animesService.findAll());
     }
 
@@ -49,8 +49,8 @@ public class AnimeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> getAnime(@PathVariable String id) {
-        return ResponseEntity.ok(id);
+    public ResponseEntity<List<AnimesEntitie>> getAnime(@PathVariable String id) {
+        return ResponseEntity.ok(animesService.findById(id));
     }
 
     @DeleteMapping("/{id}")

@@ -14,12 +14,21 @@ public class AnimesRepository {
     private final RowMapper<AnimesEntitie> animesMapper = (rs, rowNum) -> {
         AnimesEntitie anime = new AnimesEntitie();
         anime.setId(rs.getString("id"));
-        anime.setName(rs.getString("nome"));
+        anime.setName(rs.getString("name"));
         anime.setGenero(rs.getString("genero"));
         anime.setSinopse(rs.getString("sinopse"));
         anime.setDataLancamento(rs.getString("data_lancamento"));
         anime.setStatus(rs.getString("status"));
         anime.setImagem(rs.getString("imagem"));
+        anime.setFavorito(rs.getBoolean("favorito"));
+        // Supondo que os vídeos sejam armazenados como uma string separada por vírgulas
+        String videosStr = rs.getString("videos");
+        if (videosStr != null && !videosStr.isEmpty()) {
+            String[] videosArray = videosStr.split(",");
+            for (String video : videosArray) {
+                anime.getVideos().add(video.trim());
+            }
+        }
         return anime;
     };
 // Buscar todos os animes paginados e ordenados pelo campo passado por parâmetro
@@ -57,13 +66,13 @@ public class AnimesRepository {
         return jdbc.query("SELECT * FROM animes", animesMapper);
     }
 
-    public Optional<AnimesEntitie> findById(String id) {
+    public List<AnimesEntitie> findById(String id) {
         List<AnimesEntitie> list = jdbc.query(
                 "SELECT * FROM animes WHERE id = ?",
                 animesMapper,
                 id
         );
-        return list.stream().findFirst();
+        return list.stream().toList();
     }
 
     public Optional<AnimesEntitie> findByNome(String nome) {
@@ -96,7 +105,7 @@ public class AnimesRepository {
         );
     }
 
-    public Optional<AnimesEntitie> delete(String id) {
+    public List<AnimesEntitie> delete(String id) {
         jdbc.update("DELETE FROM animes WHERE id = ?", id);
         return findById(id);
     }

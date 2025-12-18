@@ -12,11 +12,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter @Setter
-@NoArgsConstructor  // For Jackson deserialization
+
 @AllArgsConstructor
 public class AnimesEntitie {
-    @JsonIgnore  // Hide from Swagger JSON
-    private String id = UUID.randomUUID().toString();
+
+    private String id;
+    public AnimesEntitie() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     @NotBlank(message = "Nome é obrigatório")
     private String name;
